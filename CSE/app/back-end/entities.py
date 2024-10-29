@@ -117,40 +117,10 @@ class User:
         dbconnection.close()
 
     def update(self, dbconnection, table_name="users"):
-        query = f"""UPDATE {table_name}
-        SET first_name = '{self.first_name}', 
-            last_name = '{self.last_name}', 
-            dob = {self.dob}, 
-            gender = {self.gender}, 
-            phone = '{self.phone}', 
-            email = '{self.email}', 
-            password = '{self.password}', 
-            created_at = {self.created_at}, 
-            updated_at =  {self.updated_at}
-        WHERE id = {self.id}""" 
-        cursor = dbconnection.cursor()
-        cursor.execute(query)
-        dbconnection.commit()
-        cursor.close()
-        dbconnection.close()
-          
+        pass 
 
     def delete(self, dbconnection, table_name="users"):
-        query = f"""DELETE FROM {table_name} WHERE id = {self.id}""" 
-        cursor = dbconnection.cursor()
-        cursor.execute(query)
-        dbconnection.commit()
-        cursor.close()
-        dbconnection.close()
-        print("deleted succesfully")
-        
-    def deleteAll(self, dbconnection, table_name="users"):
-        query = f"""DELETE FROM {table_name}"""
-        cursor = dbconnection.cursor()
-        cursor.execute(query)
-        dbconnection.commit()
-        cursor.close()
-        dbconnection.close()
+        pass 
 
 
 class UserFile:

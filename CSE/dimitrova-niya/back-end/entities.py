@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from flask import json
+
 
 class User:
     def __init__(self):
@@ -19,6 +21,17 @@ class User:
         if self.password is None or len(self.password) < 8:
             return False 
         return True 
+    
+    def get_by_email(self, dbconnection, table_name="users",email=None):
+        assert email is not None
+        query = f"""SELECT * FROM {table_name} WHERE email = {email}"""
+        cursor = dbconnection.cursor()
+        cursor.execute(query)
+        result = cursor.fetchone()
+        cursor.close()
+        dbconnection.close()
+        self.from_tuple(result)
+        return self 
     
     def insert(self, dbconnection, table_name="users"):
         query = f"""
@@ -53,6 +66,7 @@ class User:
         dbconnection.close()
 
     def from_tuple(self, user_tuple):
+        assert len(user_tuple) == 11
         self.id = user_tuple[0]
         self.first_name = user_tuple[1]
         self.last_name = user_tuple[2]
@@ -64,11 +78,10 @@ class User:
         self.created_at = user_tuple[8]
         self.updated_at = user_tuple[9]
         self.is_active = user_tuple[10]
-        
         return self
-    
+
     def from_dict(self, user_dict):
-        self.id = user_dict.get["id"]
+        self.id = user_dict["id"]
         self.first_name = user_dict["first_name"]
         self.last_name = user_dict["last_name"]
         self.dob = user_dict["dob"]
@@ -79,31 +92,35 @@ class User:
         self.created_at = user_dict["created_at"]
         self.updated_at = user_dict["updated_at"]
         self.is_active = user_dict["is_active"]
-        
-        return self
+        return self 
 
+    def from_json(self, user_json):
+        user_dict = json.loads(user_json)
+        return self.from_dict(user_dict)
+    
     def to_dict(self):
         user_dict = {
             "id": self.id,
-            "first_name" = self.first_name,
-            "last_name" = self.last_name,
-            "dob" = self.dob,
-            "gender" = self.gender,
-            "phone" = self.phone,
-            "email" = self.email,
-            "created_at" = self.created_at,
-            "updated_at" = self.updated_at,
-            "is_active" = self.is_active
+            "first_name": self.first_name,
+            "last_name": self.last_name,
+            "dob": self.dob,
+            "gender": self.gender,
+            "phone": self.phone,
+            "email": self.email,
+            # "password": self.password,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
         }
         return user_dict
-        
-    def from_json
+    
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     def get(self, dbconnection, table_name="users"):
         query = f"""SELECT * FROM {table_name} WHERE id = {self.id}""" 
         cursor = dbconnection.cursor()
         cursor.execute(query)
-        result = cursor.fetchall()
+        result = cursor.fetchone()
         cursor.close()
         dbconnection.close()
         self.from_tuple(result)
@@ -127,7 +144,6 @@ class User:
         cursor.close()
         dbconnection.close()
           
-
     def delete(self, dbconnection, table_name="users"):
         query = f"""DELETE FROM {table_name} WHERE id = {self.id}""" 
         cursor = dbconnection.cursor()
@@ -177,6 +193,41 @@ class UserFile:
         cursor.close()
         dbconnection.close()
         
+    def from_tuple(self, user_tuple):
+        self.id = user_tuple[0]
+        self.uploaded_image_url = user_tuple[1]
+        self.selfie_url = user_tuple[2]
+        self.user_id = user_tuple[3]
+        self.created_at = user_tuple[4]
+        self.updated_at = user_tuple[5]
+        return self
+    
+    def from_json(self, user_json):
+        user_dict = json.loads(user_json)
+        return self.from_dict(user_dict)
+    
+    def to_json(self):
+        return json.dumps(self.to_dict())
+    
+    def to_dict(self):
+        user_dict = {
+            "id": self.id,
+            "uploaded_image_url": self.uploaded_image_url,
+            "selfie_url": self.selfie_url,
+            "user_id": self.user_id,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at
+        }
+        return user_dict
+    
+    def from_dict(self, user_dict):
+        self.id = user_dict["id"]
+        self.uploaded_image_url = user_dict["uploaded_image_url"]
+        self.selfie_url = user_dict["selfie_url"]
+        self.user_id = user_dict["user_id"]
+        self.created_at = user_dict["created_at"]
+        self.updated_at = user_dict["updated_at"]
+        return self 
 
     def get(self, dbconnection, table_name="user_files"):
         query = f"""SELECT * FROM {table_name} WHERE id = {self.id}""" 
@@ -185,7 +236,7 @@ class UserFile:
         result = cursor.fetchone()
         cursor.close()
         dbconnection.close()
-        return result 
+        return self 
 
     def update(self):
         pass 
@@ -217,6 +268,9 @@ if __name__ == "__main__":
     u = user.get(connection)
     print(u) 
     
+    print(u.to_dict())
+    print(u.to_json())
+    
     
     file = UserFile()
     file.uploaded_image_url = "123456"
@@ -231,6 +285,8 @@ if __name__ == "__main__":
     file.id = 1
     f = file.get(connection)
     print(f) 
+    print(f.to_dict())
+    print(f.to_json())
     # user.first_name = "Malcho"
     # connection = connect()
     # user.update(connection)
