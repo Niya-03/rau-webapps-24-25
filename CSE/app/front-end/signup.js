@@ -41,27 +41,25 @@ function signupStep1() {
     user.email = document.getElementById('email').value;
     user.phone = document.getElementById('phone').value;
     user.password = password.value;
-
-
+    
     const dob = document.getElementById('dob');
     const gender = document.getElementById('gender');
     user.dob = new Date(dob.value).getTime();
     user.gender = parseInt(gender.value);
-    console.log(user)
-
-    //create new user
-    const url = 'http://127.0.0.1:5001/signup';
+    
+    // fetch(url, options).then().then().catch()
+    // Create new user
+    const url = "http://localhost:5001/signup"
     const options = {
         method: "POST",
         headers: {
-            "Content-Type": "application.json"
+            "Content-Type": "application/json"
         },
         body: JSON.stringify(user)
     };
+    fetch(url, options).then(responseArrived).then(responseBodyReceived).catch(errorHappened);
 
-    fetch(url,options).then(responseArrived).then(responseBodyArrived).catch(errorHappened);
-
-    window.localStorage.setItem('user', JSON.stringify(user));
+    // window.localStorage.setItem('user', JSON.stringify(user));
     // window.location.replace("signup-2.html");
 }
 
@@ -90,7 +88,7 @@ function getData() {
 
     fetch(url)
     .then(responseArrived)
-    .then(responseBodyArrived)
+    .then(responseBodyReceived)
     .catch(errorHappened);
     console.log("Hello!!");
 }
@@ -102,10 +100,14 @@ function responseBodyArrived(response){
 function responseArrived(response) {
     console.log("Success!!!");
     console.log(response);
-    if(!response.ok){
-        throw new Error("failed to get data")
+    if (!response.ok) {
+        throw new Error("Failed to get data.");
     }
-    return response.json;
+    return response.json();
+}
+
+function responseBodyReceived(response) {
+    console.log(response);
 }
 
 function errorHappened(response) {
