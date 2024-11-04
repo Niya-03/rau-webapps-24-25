@@ -95,7 +95,7 @@ def signup():
         user.get_by_email(dbconnection=connection)
 
         connection = connect()        
-        user.get(dbconnection=connection)
+        user.get_by_email(dbconnection=connection, email=user.email)
         response = Response(json.dumps({"data": {"id": user.id, "first_name": user.first_name}}),
                                 status=200,
                                 headers={"Content-Type": "application/json"})
