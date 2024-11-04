@@ -1,9 +1,15 @@
 from flask import Flask, json, request, Response
 from datetime import datetime
+
+from flask_cors import CORS
 from entities import User
 
 app = Flask("app")
-
+CORS(app,
+     resources={
+         "/*": {"origins" : "*"}
+         
+     })
 
 @app.route("/", methods=["GET"])
 def home():

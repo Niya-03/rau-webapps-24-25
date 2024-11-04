@@ -1,11 +1,17 @@
 from datetime import datetime
 import json
+from sqlite3 import connect
 from flask import Flask, request, Response
+from flask_cors import CORS
 
 from entities import User 
 
 app = Flask("app")
-
+CORS(app,
+     resources={
+         "/*": {"origins" : "*"}
+         
+     })
 
 @app.route("/", methods=["GET"])
 def home():
@@ -44,7 +50,8 @@ def signin():
     # 3.3. if they match => we let them in 
     user = User()
     try:
-        user.get_by_email(email=body["email"])
+        connection = connect()
+        user.get_by_email(dbconnection=connection, email=body["email"])
         if user.password == body["password"]:
             response = Response(json.dumps({"data": {"id": user.id, "first_name": user.first_name}}),
                                 status=200,

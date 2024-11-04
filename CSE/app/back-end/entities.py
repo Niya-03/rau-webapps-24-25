@@ -24,6 +24,7 @@ class User:
     
     # === Initialisation and other utils or helper methods === #
     def from_tuple(self, user_tuple):
+        
         assert len(user_tuple) == 11
         self.id = user_tuple[0]
         self.first_name = user_tuple[1]
