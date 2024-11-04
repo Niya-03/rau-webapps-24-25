@@ -1,75 +1,90 @@
-let user = localStorage.getItem('user');
-
+let user = window.localStorage.getItem('user');
 if (!user) {
-    const user = {
+    user = {
         firstName: undefined,
         lastName: undefined,
         email: undefined,
         password: undefined,
+        phone: undefined,
         dob: undefined,
-        gender: undefined,
-        phone: undefined
-    };
+        gender: undefined
+    }
 } else {
-    user = JSON.parse();
+    user = JSON.parse(user);
 }
-
-
-
-const form = document.getElementById('step1form');
-if (form) {
-    form.addEventListener('submit', signupStep1);
-}
-
-
-
-// function stopFormDefault(event) {
-//     event.preventDefault();
-//     // actual logic, e.g. validate the form
-//     console.log('Form submission cancelled.');
-// }
-
-function signupStep1(e) {
-    e.preventDefault();
+function signupStep1() {
     const password = document.getElementById('password');
     const confirmPassword = document.getElementById('confirm_password');
-
-    if (password.value == "" || password.value != confirmPassword.value) {
+    if (password.value == "" || (password.value != confirmPassword.value)) {
         console.log("passwords are different");
         return;
     }
 
     const terms = document.getElementById('terms');
-    const privacy = document.getElementById('privacy');
-
     if (!terms.checked) {
-        console.log('Terms not checked');
+        console.log("terms policies must be agreed upon");
         return;
     }
-
+    const privacy = document.getElementById('privacy');
     if (!privacy.checked) {
-        console.log('privacy not checked!');
+        console.log("privacy policies must be agreed upon");
         return;
     }
 
     user.firstName = document.getElementById('firstname').value;
     user.lastName = document.getElementById('lastname').value;
-    const dob = document.getElementById('dob');
-    user.dob = dob.value;
     user.email = document.getElementById('email').value;
-    user.password = password.value;
-    const gender = document.getElementById('gender');
-    user.gender = gender.value;
     user.phone = document.getElementById('phone').value;
 
-    console.log(user)
+    const dob = document.getElementById('dob');
+    const gender = document.getElementById('gender');
+    user.dob = dob.value;
+    user.gender = gender.value;
 
-    localStorage.setItem('user', JSON.stringify(user));
+    window.localStorage.setItem('user', JSON.stringify(user));
+    window.location.replace("signup-ver.html");
+}
 
-    //window.location.replace('signup-2.html');
-
-    
-
-   
+function signupStep2() {
 
 }
+
+const form = document.querySelector('form');
+form.addEventListener('submit', stopFormDefault);
+
+function stopFormDefault(event) {
+    event.preventDefault();
+    // actual logic, e.g. validate the form
+    console.log('Form submission cancelled.');
+}
+
+function getData() {
+    //fetch(url, options).then(f(x).then(g(x)).catch(h(x)));
+    url = 'http://127.0.0.1:5001';
+
+    const options = {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: {
+
+        }
+    }
+
+    fetch(url, options)
+        .then(responseArrived)
+        .catch(errorHappened);
+}
+
+function responseArrived(response) {
+    console.log('success')
+    console.log(response);
+}
+
+function errorHappened(response) {
+    console.log("errorrr")
+    console.log(response)
+}
+
+

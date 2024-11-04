@@ -1,13 +1,16 @@
 let user = window.localStorage.getItem('user');
 if (!user) {
     user = {
+        id: undefined,
         firstName: undefined,
         lastName: undefined,
         email: undefined,
         password: undefined,
         phone: undefined,
         dob: undefined,
-        gender: undefined
+        gender: undefined,
+        created_at: undefined,
+        updated_at: undefined
     }
 } else {
     user = JSON.parse(user);
@@ -38,8 +41,9 @@ function signupStep1() {
 
     const dob = document.getElementById('dob');
     const gender = document.getElementById('gender');
-    user.dob = dob.value;
-    user.gender = gender.value;
+    user.dob = new Date(dob.value).getTime();
+    user.gender = parseInt(gender.value);
+    
 
     window.localStorage.setItem('user', JSON.stringify(user));
     window.location.replace("signup-2.html");
@@ -57,3 +61,4 @@ function stopFormDefault(event) {
     // actual logic, e.g. validate the form
     console.log('Form submission cancelled.');
 }
+
