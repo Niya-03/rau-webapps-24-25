@@ -42,6 +42,17 @@ function signin() {
 
     errorParagraph.innerText = "Invalid user credentials.";
     errorParagraph.style.color = "red";    
+
+    //-------------------------------------------------
+    const url = "http://localhost:5001/signin"
+    const options = {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({'email':email, 'password':password})
+    };
+    fetch(url, options).then(responseArrived).then(responseBodyReceived).catch(errorHappened);
 }
 
 
@@ -52,4 +63,26 @@ function stopFormDefault(event) {
     event.preventDefault();
     // actual logic, e.g. validate the form
     console.log('Form submission cancelled.');
+}
+
+function responseBodyArrived(response){
+    console.log(response);
+}
+
+function responseArrived(response) {
+    console.log("Success!!!");
+    console.log(response);
+    if (!response.ok) {
+        throw new Error("Failed to get data.");
+    }
+    return response.json();
+}
+
+function responseBodyReceived(response) {
+    console.log(response);
+}
+
+function errorHappened(response) {
+    console.log("Error!!!");
+    console.log(response);
 }

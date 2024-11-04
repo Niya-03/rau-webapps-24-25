@@ -92,7 +92,7 @@ def signup():
         user.created_at = datetime.now().timestamp()
         user.updated_at = user.created_at
         connection = connect()
-        user.insert(dbconnection=connection)
+        user.get_by_email(dbconnection=connection)
 
         connection = connect()        
         user.get(dbconnection=connection)
